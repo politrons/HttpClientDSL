@@ -1,8 +1,8 @@
-package com.politrons.dsl
+package com.politrons.mock
 
 import com.twitter.finagle._
-import com.twitter.finagle.http.{Request, Response}
 import com.twitter.finagle.http.service.HttpResponseClassifier
+import com.twitter.finagle.http.{Request, Response}
 
 /**
   * Created by pabloperezgarcia on 08/04/2017.

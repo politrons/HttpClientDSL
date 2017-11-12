@@ -1,6 +1,7 @@
 package com.politrons.dsl
 
 import com.politrons.dsl.HttpClientDSL._
+import com.politrons.mock.HttpServers
 import org.scalatest.FeatureSpecLike
 
 /**

@@ -1,4 +1,4 @@
-package com.politrons.dsl
+package com.politrons.mock
 
 import com.twitter.finagle._
 import com.twitter.finagle.http.{Method, Request, Response}
