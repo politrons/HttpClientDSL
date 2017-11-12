@@ -25,10 +25,12 @@ trait HttpClientDSL extends Actions {
     *
     * @return Any possible value defined in the algebra Action´s
     */
-  override def scenario: Action ~> Id = new (Action ~> Id) {
+  override def interpreter: Action ~> Id = new (Action ~> Id) {
     def apply[A](a: Action[A]): Id[A] = a match {
       case _Get() => http.Method.Get
       case _Post() => http.Method.Post
+      case _Delete() => http.Method.Delete
+      case _Put() => http.Method.Put
       case _To(uri, method) =>
         val req = http.Request(method, "/")
         val client = Http.newService(uri)
@@ -39,6 +41,7 @@ trait HttpClientDSL extends Actions {
       case _Result(requestInfo) =>
         Await.result(requestInfo._1(requestInfo._2)).getContentString()
       case _isStatus(code, requestInfo) => Await.result(requestInfo._1(requestInfo._2)).statusCode == code
+      case _ => throw new IllegalArgumentException("No action allowed by the DSL")
     }
   }
 }

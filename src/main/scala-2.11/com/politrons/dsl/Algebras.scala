@@ -26,6 +26,10 @@ trait Algebras {
 
   case class _Post() extends Action[Any]
 
+  case class _Put() extends Action[Any]
+
+  case class _Delete() extends Action[Any]
+
   case class _To(uri: String, method: Method) extends Action[Any]
 
   case class _WithBody(body: String, requestInfo: RequestInfo) extends Action[Any]
