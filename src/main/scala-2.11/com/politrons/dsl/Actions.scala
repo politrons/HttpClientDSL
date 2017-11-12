@@ -8,13 +8,12 @@ import scalaz._
 /**
   * Created by Pablo Perez Garcia on 07/07/2017.
   *
-  * Here we define the action functions which create the Free monads using the algebras that we defined, and passing the values received.
-  * Those functions are the real DSL that the client will use in their implementations.
+  * Here we define the action functions which create the Free monads using the algebras that we defined,
+  * and passing the values received.
+  *
+  * Those functions are the glue of monads of the DSL flatting one to another monad.
   */
 trait Actions extends Algebras {
-
-
-
 
   implicit class customFree(free: ActionMonad[Any]) {
 

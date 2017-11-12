@@ -10,12 +10,11 @@ import scalaz.~>
   * Created by Pablo Perez Garcia on 06/07/2017.
   *
   * This is the main class of the test framework. Using scalaz we create a DSL where the client can use
-  * the common TDD components Given, When, Then.
+  * the common Http method request Get, Post, Put, Delete
   *
   * Thanks to this DSL we can separate structure from behaviour of our application.
   *
-  * The implementation of this DSL is using the interpreter scenario which apply the logic of the DSL.
-  * That interpreter must be implemented by the consumer of the DSL.
+  * The implementation of this DSL is using the interpreter which apply the logic of the DSL.
   */
 object HttpClientDSL extends Actions {
 
