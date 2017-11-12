@@ -1,7 +1,6 @@
 package com.politrons.dsl
 
-import com.twitter.finagle.http.{Request, Response}
-import com.twitter.finagle.{Http, Service, http}
+import com.twitter.finagle.{Http, http}
 import com.twitter.util.Await
 
 import scalaz.~>
@@ -30,12 +29,13 @@ trait HttpClientDSL extends Actions {
     def apply[A](a: Action[A]): Id[A] = a match {
       case _Get() => http.Method.Get
       case _Post() => http.Method.Post
-      //      case _Request(method) => http.Request(method, "/")
       case _To(uri, method) =>
         val req = http.Request(method, "/")
         val client = Http.newService(uri)
-        //        req.write("test")
         new RequestInfo(client, req)
+      case _WithBody(body, requestInfo) =>
+        requestInfo._2.write(body)
+        Await.result(requestInfo._1(requestInfo._2))
       case _Result(requestInfo) =>
         Await.result(requestInfo._1(requestInfo._2)).getContentString()
       case _isStatus(code, requestInfo) => Await.result(requestInfo._1(requestInfo._2)).statusCode == code

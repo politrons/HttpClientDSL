@@ -18,17 +18,17 @@ trait Actions extends Algebras {
   }
 
   def Post: ActionMonad[Any] = {
-    liftF[Action, Any](_Get())
+    liftF[Action, Any](_Post())
   }
 
   implicit class customFree(free: ActionMonad[Any]) {
-//
-//    def Request: ActionMonad[Any] = {
-//      free.flatMap(any => liftF[Action, Any](_Request(any.asInstanceOf[Method])))
-//    }
 
     def to(uri: String): ActionMonad[Any] = {
       free.flatMap(any => liftF[Action, Any](_To(uri, any.asInstanceOf[Method])))
+    }
+
+    def withBody(body: String): ActionMonad[Any] = {
+      free.flatMap(any => liftF[Action, Any](_WithBody(body, any.asInstanceOf[RequestInfo])))
     }
 
     def resultAsString: ActionMonad[Any] = {
@@ -39,7 +39,7 @@ trait Actions extends Algebras {
       free.flatMap(any => liftF[Action, Any](_isStatus(code,any.asInstanceOf[RequestInfo])))
     }
 
-    def get: Id[Any] = free.foldMap(scenario)
+    def fire: Id[Any] = free.foldMap(scenario)
   }
 
   def scenario: Action ~> Id

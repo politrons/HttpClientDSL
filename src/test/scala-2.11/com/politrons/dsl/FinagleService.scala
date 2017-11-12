@@ -18,8 +18,10 @@ object FinagleService {
       val response = Response()
       request.method match {
         case Method.Get => response.setContentString(s"Server response:$body".stripMargin)
-        case Method.Post => body = request.getContentString()
+        case Method.Post => {
+          body = request.getContentString()
           response.statusCode = 202
+        }
       }
       Future.value(response)
     }
