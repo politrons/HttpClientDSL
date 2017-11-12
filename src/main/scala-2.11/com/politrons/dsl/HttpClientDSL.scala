@@ -1,6 +1,6 @@
 package com.politrons.dsl
 
-import com.twitter.finagle.http.Method
+import com.twitter.finagle.http.{Method, Response}
 import com.twitter.finagle.{Http, http}
 import com.twitter.util.Await._
 
@@ -54,9 +54,25 @@ object HttpClientDSL extends Actions {
       case _To(uri, method) => getRequestInfo(uri, method)
       case _WithBody(body, requestInfo) => requestInfo._2.write(body); result(requestInfo._1(requestInfo._2))
       case _Result(requestInfo) => result(requestInfo._1(requestInfo._2)).getContentString()
-      case _isStatus(code, requestInfo) => result(requestInfo._1(requestInfo._2)).statusCode == code
-      case _Status(requestInfo) => result(requestInfo._1(requestInfo._2)).statusCode
+      case _isStatus(code, any) => isStatusCodeEqualsThan(code, any)
+      case _Status(any) => getstatusCode(any)
       case _ => throw new IllegalArgumentException("No action allowed by the DSL")
+    }
+  }
+
+  private def getstatusCode[A](any: Any) = {
+    any match {
+      case requestInfo: RequestInfo => result(requestInfo._1(requestInfo._2)).statusCode
+      case response: Response => response.statusCode
+      case _ =>
+    }
+  }
+
+  private def isStatusCodeEqualsThan[A](code: Int, any: Any) = {
+    any match {
+      case requestInfo: RequestInfo => result(requestInfo._1(requestInfo._2)).statusCode == code
+      case response: Response => response.statusCode == code
+      case _ =>
     }
   }
 

@@ -37,14 +37,16 @@ Using the DSL we can structure our http client:
 
 ```
         Get
-          .to("localhost:8500") ::
+          .to("localhost:8500/home/foo")
+          .resultAsString ::
 ```
 * Post
 
 ```
         Post
           .to("localhost:8500")
-          .withBody("Hello DSL http client") ::
+          .withBody("Hello DSL http client")
+          .isStatus(202) ::
 ```
 
 * Put

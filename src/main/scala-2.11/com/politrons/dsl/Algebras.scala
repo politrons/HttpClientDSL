@@ -36,8 +36,8 @@ trait Algebras {
 
   case class _Result(requestInfo: RequestInfo) extends Action[Any]
 
-  case class _isStatus(code: Int, requestInfo: RequestInfo) extends Action[Any]
+  case class _isStatus(code: Int, any: Any) extends Action[Any]
 
-  case class _Status(requestInfo: RequestInfo) extends Action[Any]
+  case class _Status(any: Any) extends Action[Any]
 
 }

@@ -34,7 +34,8 @@ class ExampleIT extends FeatureSpecLike {
       println(s"Put result:${
         Put
           .to("localhost:8500")
-          .withBody("Hello DSL http client AGAIN!") ::
+          .withBody("Hello DSL http client AGAIN!")
+          .isStatus(202) ::
       }")
     }
 
