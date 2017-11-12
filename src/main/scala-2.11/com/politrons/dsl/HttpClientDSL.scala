@@ -3,6 +3,7 @@ package com.politrons.dsl
 import com.twitter.finagle.{Http, http}
 import com.twitter.util.Await
 
+import scalaz.Free.liftF
 import scalaz.~>
 
 /**
@@ -16,7 +17,23 @@ import scalaz.~>
   * The implementation of this DSL is using the interpreter scenario which apply the logic of the DSL.
   * That interpreter must be implemented by the consumer of the DSL.
   */
-trait HttpClientDSL extends Actions {
+object HttpClientDSL extends Actions {
+
+  def Get: ActionMonad[Any] = {
+    liftF[Action, Any](_Get())
+  }
+
+  def Post: ActionMonad[Any] = {
+    liftF[Action, Any](_Post())
+  }
+
+  def Put: ActionMonad[Any] = {
+    liftF[Action, Any](_Put())
+  }
+
+  def Delete: ActionMonad[Any] = {
+    liftF[Action, Any](_Delete())
+  }
 
   /**
     * Using Free monads we need to provide an interpreter that match the algebras used [Action].

@@ -13,21 +13,8 @@ import scalaz._
   */
 trait Actions extends Algebras {
 
-  def Get: ActionMonad[Any] = {
-    liftF[Action, Any](_Get())
-  }
 
-  def Post: ActionMonad[Any] = {
-    liftF[Action, Any](_Post())
-  }
 
-  def Put: ActionMonad[Any] = {
-    liftF[Action, Any](_Put())
-  }
-
-  def Delete: ActionMonad[Any] = {
-    liftF[Action, Any](_Delete())
-  }
 
   implicit class customFree(free: ActionMonad[Any]) {
 
@@ -43,8 +30,8 @@ trait Actions extends Algebras {
       free.flatMap(any => liftF[Action, Any](_Result(any.asInstanceOf[RequestInfo])))
     }
 
-    def isStatus(code:Int): ActionMonad[Any] = {
-      free.flatMap(any => liftF[Action, Any](_isStatus(code,any.asInstanceOf[RequestInfo])))
+    def isStatus(code: Int): ActionMonad[Any] = {
+      free.flatMap(any => liftF[Action, Any](_isStatus(code, any.asInstanceOf[RequestInfo])))
     }
 
     def status: ActionMonad[Any] = {

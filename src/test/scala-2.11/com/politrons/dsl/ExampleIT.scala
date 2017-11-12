@@ -1,11 +1,13 @@
 package com.politrons.dsl
 
+import com.politrons.dsl.HttpClientDSL._
 import org.scalatest.FeatureSpecLike
 
 /**
   * Created by Pablo Perez Garcia on 20/02/2017.
   */
-class ExampleIT extends FeatureSpecLike with HttpClientDSL {
+class ExampleIT extends FeatureSpecLike {
+
 
   HttpServers.start()
   info("This test is just to prove how the http client DSL works")
