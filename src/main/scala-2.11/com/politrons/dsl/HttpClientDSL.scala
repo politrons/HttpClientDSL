@@ -1,8 +1,10 @@
 package com.politrons.dsl
 
+import com.twitter.finagle.http.Method
 import com.twitter.finagle.{Http, http}
-import com.twitter.util.Await
+import com.twitter.util.Await._
 
+import scala.util.matching.Regex
 import scalaz.Free.liftF
 import scalaz.~>
 
@@ -17,6 +19,8 @@ import scalaz.~>
   * The implementation of this DSL is using the interpreter which apply the logic of the DSL.
   */
 object HttpClientDSL extends Actions {
+
+  val URI_REGEX: Regex = "(.*[0-9])(\\/[a-zA-Z].*)".r
 
   def Get: ActionMonad[Any] = {
     liftF[Action, Any](_Get())
@@ -47,19 +51,27 @@ object HttpClientDSL extends Actions {
       case _Post() => http.Method.Post
       case _Delete() => http.Method.Delete
       case _Put() => http.Method.Put
-      case _To(uri, method) =>
-        val req = http.Request(method, "/")
-        val client = Http.newService(uri)
-        new RequestInfo(client, req)
-      case _WithBody(body, requestInfo) =>
-        requestInfo._2.write(body)
-        Await.result(requestInfo._1(requestInfo._2))
-      case _Result(requestInfo) =>
-        Await.result(requestInfo._1(requestInfo._2)).getContentString()
-      case _isStatus(code, requestInfo) => Await.result(requestInfo._1(requestInfo._2)).statusCode == code
-      case _Status(requestInfo) => Await.result(requestInfo._1(requestInfo._2)).statusCode
+      case _To(uri, method) => getRequestInfo(uri, method)
+      case _WithBody(body, requestInfo) => requestInfo._2.write(body); result(requestInfo._1(requestInfo._2))
+      case _Result(requestInfo) => result(requestInfo._1(requestInfo._2)).getContentString()
+      case _isStatus(code, requestInfo) => result(requestInfo._1(requestInfo._2)).statusCode == code
+      case _Status(requestInfo) => result(requestInfo._1(requestInfo._2)).statusCode
       case _ => throw new IllegalArgumentException("No action allowed by the DSL")
     }
+  }
+
+  private def getRequestInfo[A](uri: String, method: Method) = {
+    new RequestInfo(Http.newService(getHost(uri)), http.Request(method, getPath(uri)))
+  }
+
+  private def getPath[A](uri: String) = {
+    val pathMap = URI_REGEX.findAllIn(uri).matchData.map(m => m.group(2))
+    if (pathMap.hasNext) pathMap.next() else "/"
+  }
+
+  private def getHost[A](uri: String) = {
+    val hostMap = URI_REGEX.findAllIn(uri).matchData.map(m => m.group(1))
+    if (hostMap.hasNext) hostMap.next() else uri
   }
 }
 

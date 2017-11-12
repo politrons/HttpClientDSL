@@ -25,7 +25,7 @@ class ExampleIT extends FeatureSpecLike {
     scenario(s"Get request to server and response") {
       println(s"Get result:${
         Get
-          .to("localhost:8500")
+          .to("localhost:8500/home/foo")
           .resultAsString ::
       }")
     }

@@ -17,7 +17,7 @@ object FinagleService {
     request: Request => {
       val response = Response()
       request.method match {
-        case Method.Get => response.setContentString(s"Server response:$body".stripMargin)
+        case Method.Get => processGetRequest(request, response)
         case Method.Post | Method.Put => body = request.getContentString(); response.statusCode = 202
         case Method.Delete => body = ""; response.statusCode = 202
       }
@@ -25,4 +25,10 @@ object FinagleService {
     }
   }
 
+  private def processGetRequest(request: Request, response: Response) = {
+    request.path match {
+      case "/" => response.setContentString(s"Server response:$body".stripMargin)
+      case "/home/foo" => response.setContentString(s"Server response:$body".stripMargin)
+    }
+  }
 }
