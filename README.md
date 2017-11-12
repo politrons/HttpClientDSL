@@ -1,6 +1,6 @@
 Author  Pablo Perez Garcia
 
-![My image](src/main/resources/img/finagle.png) ![My image](src/main/resources/img/http-icon.png)
+![My image](src/main/resources/img/http-icon.png) ![My image](src/main/resources/img/finagle.png)
 
 
 This open souce project provide a Http client DSL based on [Free monads](http://eed3si9n.com/learning-scalaz/Free+Monad.html) of [ScalaZ](https://github.com/scalaz/scalaz).
