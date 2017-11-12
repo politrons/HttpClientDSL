@@ -41,6 +41,7 @@ trait HttpClientDSL extends Actions {
       case _Result(requestInfo) =>
         Await.result(requestInfo._1(requestInfo._2)).getContentString()
       case _isStatus(code, requestInfo) => Await.result(requestInfo._1(requestInfo._2)).statusCode == code
+      case _Status(requestInfo) => Await.result(requestInfo._1(requestInfo._2)).statusCode
       case _ => throw new IllegalArgumentException("No action allowed by the DSL")
     }
   }

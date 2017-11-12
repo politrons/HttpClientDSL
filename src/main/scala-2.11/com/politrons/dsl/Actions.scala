@@ -47,6 +47,10 @@ trait Actions extends Algebras {
       free.flatMap(any => liftF[Action, Any](_isStatus(code,any.asInstanceOf[RequestInfo])))
     }
 
+    def status: ActionMonad[Any] = {
+      free.flatMap(any => liftF[Action, Any](_Status(any.asInstanceOf[RequestInfo])))
+    }
+
     def :: : Id[Any] = free.foldMap(interpreter)
   }
 

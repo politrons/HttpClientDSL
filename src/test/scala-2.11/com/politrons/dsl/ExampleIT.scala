@@ -59,8 +59,15 @@ class ExampleIT extends FeatureSpecLike with HttpClientDSL {
       }")
     }
 
-
     scenario(s"Get request to server and response status 200") {
+      println(s"Get status code:${
+        Get
+          .to("localhost:8500")
+          .status ::
+      }")
+    }
+
+    scenario(s"Get request to server and check response status 200") {
       println(s"Get status code 200:${
         Get
           .to("localhost:8500")
