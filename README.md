@@ -36,33 +36,29 @@ Using the DSL we can structure our http client:
 * Get
 
 ```
-        Get
-          .to("localhost:8500/home/foo")
+        Get.to("localhost:8500/home/foo")
           .resultAsString ::
 ```
 * Post
 
 ```
-        Post
-          .to("localhost:8500")
-          .withBody("Hello DSL http client")
-          .isStatus(202) ::
+        Post.to("localhost:8500")
+          .withBody("Hello DSL http client") ::
 ```
 
 * Put
 
 ```
-        Put
-          .to("localhost:8500")
-          .withBody("Hello DSL http client AGAIN!") ::
+       Put.to("localhost:8500")
+          .withBody("Hello DSL http client AGAIN!")
+          .isStatus(202) ::
 ```
 
 * Delete
 
 ```
-       Delete
-          .to("localhost:8500")
-          .isStatus(202) ::
+       Delete.to("localhost:8500")
+             .isStatus(202) ::
 ```
 
 
