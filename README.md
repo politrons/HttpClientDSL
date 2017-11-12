@@ -3,8 +3,8 @@ Author  Pablo Perez Garcia
 ![My image](src/main/resources/img/http-icon.png) ![My image](src/main/resources/img/finagle.png)
 
 
-This open souce project provide a Http client DSL based on [Free monads](http://eed3si9n.com/learning-scalaz/Free+Monad.html) of [ScalaZ](https://github.com/scalaz/scalaz).
-It´s using also [Finagle](https://twitter.github.io/finagle/) framework to provide the http client engine.
+An open souce library that provide a Http client DSL based on [Free monads](http://eed3si9n.com/learning-scalaz/Free+Monad.html) of [ScalaZ](https://github.com/scalaz/scalaz).
+It´s using also [Finagle](https://twitter.github.io/finagle/) toolkit to provide the http client engine.
 
 ## Use
 
@@ -60,6 +60,8 @@ Using the DSL we can structure our http client:
        Delete.to("localhost:8500")
              .isStatus(202) ::
 ```
+
+You can see the example [here](src/test/scala-2.11/com/politrons/dsl/ExampleIT.scala)
 
 
 
