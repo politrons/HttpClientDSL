@@ -15,8 +15,7 @@ class ExampleIT extends FeatureSpecLike with HttpClientDSL {
       println(s"Post result:${
         Post
           .to("localhost:8500")
-          .withBody("Hello DSL http client")
-          .fire
+          .withBody("Hello DSL http client") ::
       }")
     }
 
@@ -24,8 +23,7 @@ class ExampleIT extends FeatureSpecLike with HttpClientDSL {
       println(s"Get result:${
         Get
           .to("localhost:8500")
-          .resultAsString
-          .fire
+          .resultAsString ::
       }")
     }
 
@@ -33,8 +31,7 @@ class ExampleIT extends FeatureSpecLike with HttpClientDSL {
       println(s"Put result:${
         Put
           .to("localhost:8500")
-          .withBody("Hello DSL http client AGAIN!")
-          .fire
+          .withBody("Hello DSL http client AGAIN!") ::
       }")
     }
 
@@ -42,8 +39,7 @@ class ExampleIT extends FeatureSpecLike with HttpClientDSL {
       println(s"Get result:${
         Get
           .to("localhost:8500")
-          .resultAsString
-          .fire
+          .resultAsString ::
       }")
     }
 
@@ -51,8 +47,7 @@ class ExampleIT extends FeatureSpecLike with HttpClientDSL {
       println(s"Delete status code 202:${
         Delete
           .to("localhost:8500")
-          .isStatus(202)
-          .fire
+          .isStatus(202) ::
       }")
     }
 
@@ -60,8 +55,7 @@ class ExampleIT extends FeatureSpecLike with HttpClientDSL {
       println(s"Get result:${
         Get
           .to("localhost:8500")
-          .resultAsString
-          .fire
+          .resultAsString ::
       }")
     }
 
@@ -70,8 +64,7 @@ class ExampleIT extends FeatureSpecLike with HttpClientDSL {
       println(s"Get status code 200:${
         Get
           .to("localhost:8500")
-          .isStatus(200)
-          .fire
+          .isStatus(200) ::
       }")
     }
   }

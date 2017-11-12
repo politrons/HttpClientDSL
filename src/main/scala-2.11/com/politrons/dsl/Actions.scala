@@ -47,7 +47,7 @@ trait Actions extends Algebras {
       free.flatMap(any => liftF[Action, Any](_isStatus(code,any.asInstanceOf[RequestInfo])))
     }
 
-    def fire: Id[Any] = free.foldMap(interpreter)
+    def :: : Id[Any] = free.foldMap(interpreter)
   }
 
   def interpreter: Action ~> Id
