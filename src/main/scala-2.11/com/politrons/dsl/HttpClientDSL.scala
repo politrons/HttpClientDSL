@@ -4,7 +4,6 @@ import com.twitter.finagle.http.{Method, Response}
 import com.twitter.finagle.{Http, http}
 import com.twitter.util.Await._
 
-import scala.util.matching.Regex
 import scalaz.Free.liftF
 import scalaz.~>
 
@@ -19,8 +18,6 @@ import scalaz.~>
   * The implementation of this DSL is using the interpreter which apply the logic of the DSL.
   */
 object HttpClientDSL extends Actions {
-
-  val URI_REGEX: Regex = "(.*[0-9])(\\/[a-zA-Z].*)".r
 
   def Get: ActionMonad[Any] = {
     liftF[Action, Any](_Get())
@@ -52,8 +49,8 @@ object HttpClientDSL extends Actions {
       case _Delete() => http.Method.Delete
       case _Put() => http.Method.Put
       case _To(uri, method) => getRequestInfo(uri, method)
-      case _WithBody(body, requestInfo) => requestInfo._2.write(body); result(requestInfo._1(requestInfo._2))
-      case _Result(requestInfo) => result(requestInfo._1(requestInfo._2)).getContentString()
+      case _WithBody(body, requestInfo) => requestInfo.request.write(body); result(requestInfo.service(requestInfo.request))
+      case _Result(requestInfo) => result(requestInfo.service(requestInfo.request)).getContentString()
       case _isStatus(code, any) => isStatusCodeEqualsThan(code, any)
       case _Status(any) => getstatusCode(any)
       case _ => throw new IllegalArgumentException("No action allowed by the DSL")
@@ -62,7 +59,7 @@ object HttpClientDSL extends Actions {
 
   private def getstatusCode[A](any: Any) = {
     any match {
-      case requestInfo: RequestInfo => result(requestInfo._1(requestInfo._2)).statusCode
+      case ri: RequestInfo => result(ri.service(ri.request)).statusCode
       case response: Response => response.statusCode
       case _ =>
     }
@@ -70,25 +67,35 @@ object HttpClientDSL extends Actions {
 
   private def isStatusCodeEqualsThan[A](code: Int, any: Any) = {
     any match {
-      case requestInfo: RequestInfo => result(requestInfo._1(requestInfo._2)).statusCode == code
+      case ri: RequestInfo => result(ri.service(ri.request)).statusCode == code
       case response: Response => response.statusCode == code
       case _ =>
     }
   }
 
-  private def getRequestInfo[A](uri: String, method: Method) = {
-    new RequestInfo(Http.newService(getHost(uri)), http.Request(method, getPath(uri)))
+  private def getRequestInfo[A](_uri: String, method: Method) = {
+    val uri = new java.net.URI(_uri)
+    val host = uri.getAuthority
+    val path = uri.getPath
+    checkUri(host, path)
+    if (uri.getScheme == "https") {
+      new RequestInfo(Http.client.withTls(host).newService(host), http.Request(method, path))
+    } else {
+      new RequestInfo(Http.newService(host), http.Request(method, path))
+    }
   }
 
-  private def getPath[A](uri: String) = {
-    val pathMap = URI_REGEX.findAllIn(uri).matchData.map(m => m.group(2))
-    if (pathMap.hasNext) pathMap.next() else "/"
+  private def checkUri[A](host: String, path: String) = {
+    if (host == null || path == null) throw new IllegalArgumentException("Wrong uri format, be sure to has the structure [[Http/s]//[host]:[port]]")
   }
 
-  private def getHost[A](uri: String) = {
-    val hostMap = URI_REGEX.findAllIn(uri).matchData.map(m => m.group(1))
-    if (hostMap.hasNext) hostMap.next() else uri
+  implicit class customRequestInfo(requestInfo: RequestInfo) {
+
+    def service = requestInfo._1
+
+    def request = requestInfo._2
   }
+
 }
 
 
