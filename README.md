@@ -23,7 +23,7 @@ sbt test
 sbt package
 
 ```
-* Add jar in your project dependency and use object HttpClientDSL
+* Add jar in your project dependency and use object factory HttpClientDSL
 ```
 target/scala-2.11/httpclientdsl_2.11-1.0.jar
 
