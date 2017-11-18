@@ -34,6 +34,8 @@ trait Algebras {
 
   case class _WithBody(body: String, requestInfo: RequestInfo) extends Action[Any]
 
+  case class _WithRetry(number: Int,backoff:Int,  requestInfo: RequestInfo) extends Action[Any]
+
   case class _Result(requestInfo: RequestInfo) extends Action[Any]
 
   case class _isStatus(code: Int, any: Any) extends Action[Any]

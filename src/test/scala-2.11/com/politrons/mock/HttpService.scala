@@ -9,17 +9,23 @@ import com.twitter.util.Future
   * The Service class will receive and response a Future[Response] with types that you specify
   * Service[Req,Rep]
   */
-object FinagleService {
+object HttpService {
 
+  var retryNumber = 0
   var body: String = _
 
   val service: Service[Request, Response] = Service.mk[Request, Response] {
     request: Request => {
       val response = Response()
-      request.method match {
-        case Method.Get => processGetRequest(request, response)
-        case Method.Post | Method.Put => body = request.getContentString(); response.statusCode = 202
-        case Method.Delete => body = ""; response.statusCode = 202
+      if (retryNumber > 0) {
+        retryNumber = retryNumber - 1
+        response.statusCode = http.Status.ServiceUnavailable.code
+      } else {
+        request.method match {
+          case Method.Get => processGetRequest(request, response)
+          case Method.Post | Method.Put => body = request.getContentString(); response.statusCode = 202
+          case Method.Delete => body = ""; response.statusCode = 202
+        }
       }
       Future.value(response)
     }
@@ -29,6 +35,7 @@ object FinagleService {
     request.path match {
       case "/" => response.setContentString(s"Server response:$body".stripMargin)
       case "/home/foo" => response.setContentString(s"Server response:$body".stripMargin)
+
     }
   }
 }

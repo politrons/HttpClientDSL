@@ -1,8 +1,12 @@
 package com.politrons.dsl
 
-import com.twitter.finagle.http.{Method, Response}
-import com.twitter.finagle.{Http, http}
+import com.twitter.conversions.time._
+import com.twitter.finagle.http.{Method, Request, Response}
+import com.twitter.finagle.param.HighResTimer
+import com.twitter.finagle.service.{Backoff, RetryFilter}
+import com.twitter.finagle.{Http, Service, http}
 import com.twitter.util.Await._
+import com.twitter.util.{Return, Try}
 
 import scalaz.Free.liftF
 import scalaz.~>
@@ -49,7 +53,8 @@ object HttpClientDSL extends Actions {
       case _Delete() => http.Method.Delete
       case _Put() => http.Method.Put
       case _To(uri, method) => getRequestInfo(uri, method)
-      case _WithBody(body, requestInfo) => requestInfo.request.write(body); result(requestInfo.service(requestInfo.request))
+      case _WithRetry(number, backoff, ri) => new RequestInfo(addRetryPolicy(ri.service, number, backoff), ri.request)
+      case _WithBody(body, ri) => ri.request.write(body); result(ri.service(ri.request))
       case _Result(requestInfo) => result(requestInfo.service(requestInfo.request)).getContentString()
       case _isStatus(code, any) => isStatusCodeEqualsThan(code, any)
       case _Status(any) => getstatusCode(any)
@@ -83,6 +88,20 @@ object HttpClientDSL extends Actions {
     } else {
       new RequestInfo(Http.newService(host), http.Request(method, path))
     }
+  }
+
+  implicit val t = HighResTimer.Default
+
+  def addRetryPolicy(service: Service[Request, Response], number: Int, backoff: Int): Service[Request, Response] = {
+    withRetryPolicy(number, backoff).andThen(service)
+  }
+
+  def withRetryPolicy(number: Int, backoff: Int): RetryFilter[Request, Response] = {
+    RetryFilter(Backoff.const(backoff.millis).take(number))(shouldRetry)
+  }
+
+  val shouldRetry: PartialFunction[(Request, Try[Response]), Boolean] = {
+    case (_, Return(rep)) => rep.status.code > 404
   }
 
   private def checkUri[A](host: String, path: String) = {

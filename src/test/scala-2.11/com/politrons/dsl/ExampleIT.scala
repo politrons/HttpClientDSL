@@ -1,7 +1,7 @@
 package com.politrons.dsl
 
 import com.politrons.dsl.HttpClientDSL._
-import com.politrons.mock.HttpServers
+import com.politrons.mock.{HttpServers, HttpService}
 import org.scalatest.FeatureSpecLike
 
 /**
@@ -82,5 +82,32 @@ class ExampleIT extends FeatureSpecLike {
         result
       }")
     }
+
+    scenario(s"Post request to server and response 503 since no retry policy") {
+      HttpService.retryNumber = 5
+      println(s"Post result:${
+        Post.to("http://localhost:8500")
+          .withBody("Hello DSL http client") ::
+      }")
+    }
+
+    scenario(s"Post request to server and response after use retry policy") {
+      HttpService.retryNumber = 5
+      println(s"Post result with restries:${
+        Post.to("http://localhost:8500")
+          .withRetry(number = 7, backoff = 500)
+          .withBody("Hello DSL http client") ::
+      }")
+    }
+
+    scenario(s"Get request to server and response after use retry policy") {
+      HttpService.retryNumber = 5
+      println(s"Get result with retries:${
+        Get.to("http://localhost:8500/home/foo")
+          .withRetry(number = 7, backoff = 500)
+          .resultAsString ::
+      }")
+    }
+
   }
 }

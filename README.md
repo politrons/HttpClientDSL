@@ -31,25 +31,31 @@ target/scala-2.11/httpclientdsl_2.11-1.0.jar
 
 ## Create your own http client
 
-Using the DSL we can structure our http client:
+Using the DSL we can structure our http client with this options.
+
+* We can make http and https request.
+* We can get the body status and check this one with the code we pass.
+* Also we have implemented a retry polciy where you can pass the number of retries and backoff between eveyr retry.
+
+### DSL Examples
 
 * Get
 
 ```
-        Get.to("localhost:8500/home/foo")
+        Get.to("http://localhost:8500/home/foo")
           .resultAsString ::
 ```
 * Post
 
 ```
-        Post.to("localhost:8500")
+        Post.to("http://localhost:8500")
           .withBody("Hello DSL http client") ::
 ```
 
 * Put
 
 ```
-       Put.to("localhost:8500")
+       Put.to("http://localhost:8500")
           .withBody("Hello DSL http client AGAIN!")
           .isStatus(202) ::
 ```
@@ -57,8 +63,21 @@ Using the DSL we can structure our http client:
 * Delete
 
 ```
-       Delete.to("localhost:8500")
+       Delete.to("http://localhost:8500")
              .isStatus(202) ::
+```
+
+* Retry policy
+
+```
+      Get.to("http://localhost:8500/home/foo")
+          .withRetry(number = 7, backoff = 500)
+          .resultAsString ::
+
+
+     Post.to("http://localhost:8500")
+              .withRetry(number = 7, backoff = 500)
+              .withBody("Hello DSL http client") ::
 ```
 
 You can see the example [here](src/test/scala-2.11/com/politrons/dsl/ExampleIT.scala)

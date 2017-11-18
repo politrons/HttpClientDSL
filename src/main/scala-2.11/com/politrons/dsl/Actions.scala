@@ -25,6 +25,10 @@ trait Actions extends Algebras {
       free.flatMap(any => liftF[Action, Any](_WithBody(body, any.asInstanceOf[RequestInfo])))
     }
 
+    def withRetry(number:Int, backoff:Int): ActionMonad[Any] = {
+      free.flatMap(any => liftF[Action, Any](_WithRetry(number,backoff, any.asInstanceOf[RequestInfo])))
+    }
+
     def resultAsString: ActionMonad[Any] = {
       free.flatMap(any => liftF[Action, Any](_Result(any.asInstanceOf[RequestInfo])))
     }

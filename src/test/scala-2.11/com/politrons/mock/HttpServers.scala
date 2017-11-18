@@ -12,7 +12,7 @@ import com.twitter.finagle.http.{Request, Response}
   */
 object HttpServers {
 
-  var service: Service[Request, Response] = FinagleService.service
+  var service: Service[Request, Response] = HttpService.service
 
   private val port = "8500"
 
