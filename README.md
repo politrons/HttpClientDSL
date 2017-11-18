@@ -35,7 +35,7 @@ Using the DSL we can structure our http client with this options.
 
 * We can make http and https request.
 * We can get response body, response status, and check this last one with the code we pass.
-* Also we have implemented a retry polciy where you can pass the number of retries and backoff between eveyr retry.
+* Also we have implemented a retry polciy where you can pass the number of retries and backoff between every retry.
 
 ### DSL Examples
 
