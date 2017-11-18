@@ -34,7 +34,7 @@ target/scala-2.11/httpclientdsl_2.11-1.0.jar
 Using the DSL we can structure our http client with this options.
 
 * We can make http and https request.
-* We can get the body status and check this one with the code we pass.
+* We can get response body, response status, and check this last one with the code we pass.
 * Also we have implemented a retry polciy where you can pass the number of retries and backoff between eveyr retry.
 
 ### DSL Examples
